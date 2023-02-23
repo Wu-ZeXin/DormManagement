@@ -36,6 +36,7 @@
   import { Delete, Edit, Plus } from "@element-plus/icons-vue";
   import { checkTelephone, checkEmail } from "@/utils/validator";
   import { themeColor } from "$styleVariable";
+  import { useUserStoreWithOut } from "@/stores/modules/user";
 
   interface StudentDataType {
     usermark: string;
@@ -75,6 +76,7 @@
   // 当前页
   let page = ref(1);
   const loading = ref(true);
+  const userStore = useUserStoreWithOut();
 
   const studentData: Ref<Array<StudentDataType>> = ref([]);
   const studentDataArr = [
@@ -201,76 +203,95 @@
         size: "default",
         highlightCurrentRow: true,
       },
-      columnArr: studentDataArr.map((item: any) => {
-        if (item.title !== "操作") {
-          if (item.prop !== "sex") {
-            return {
-              attr: {
-                prop: item.prop,
-                label: item.title,
-                headerAlign: "center",
-                align: "center",
-                width: item.prop === "email" || item.prop === "college" ? "220px" : "150px",
-                fixed: item.prop === "usermark" ? "left" : false,
-              },
-            };
+      columnArr: studentDataArr
+        .map((item: any) => {
+          if (item.title !== "操作") {
+            if (item.prop !== "sex") {
+              return {
+                attr: {
+                  prop: item.prop,
+                  label: item.title,
+                  headerAlign: "center",
+                  align: "center",
+                  width: item.prop === "email" || item.prop === "college" ? "220px" : "150px",
+                  fixed: item.prop === "usermark" ? "left" : false,
+                },
+              };
+            } else {
+              return {
+                attr: {
+                  prop: item.prop,
+                  label: item.title,
+                  headerAlign: "center",
+                  align: "center",
+                  width: "100px",
+                },
+                defaultSlotName: "SexTag",
+              };
+            }
           } else {
             return {
               attr: {
-                prop: item.prop,
                 label: item.title,
                 headerAlign: "center",
                 align: "center",
-                width: "100px",
+                width: "160px",
+                fixed: "right",
               },
-              defaultSlotName: "SexTag",
+              defaultSlotConfig: ["Edit", "Delete"]
+                .map((child: string) => {
+                  return {
+                    comp: "el-button",
+                    attr: {
+                      icon: child === "Edit" ? Edit : Delete,
+                      type: child === "Edit" ? "warning" : "danger",
+                      link: true,
+                    },
+                    content: {
+                      text: child === "Edit" ? "编辑" : "删除",
+                    },
+                    event: {
+                      click: (currentRowData: any) => {
+                        if (child === "Edit") {
+                          editStudentForm.value = JSON.parse(JSON.stringify(currentRowData.row));
+                          isEditStudentForm.value = true;
+                        } else {
+                          ElMessageBox.confirm("确定删除学生信息吗？", "提示", {
+                            type: "error",
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            callback: async (action: string) => {
+                              if (action === "confirm") {
+                                await deleteStudent({ usermark: currentRowData.row.usermark });
+                                getStudentData();
+                              }
+                            },
+                          });
+                        }
+                      },
+                    },
+                  };
+                })
+                .filter((item: any) => {
+                  if (item.content.text === "编辑") {
+                    return userStore.getOperationAuthority.includes("EditStudentInfo");
+                  } else {
+                    return userStore.getOperationAuthority.includes("DeleteStudentInfo");
+                  }
+                }),
             };
           }
-        } else {
-          return {
-            attr: {
-              label: item.title,
-              headerAlign: "center",
-              align: "center",
-              width: "160px",
-              fixed: "right",
-            },
-            defaultSlotConfig: ["Edit", "Delete"].map((child: string) => {
-              return {
-                comp: "el-button",
-                attr: {
-                  icon: child === "Edit" ? Edit : Delete,
-                  type: child === "Edit" ? "warning" : "danger",
-                  link: true,
-                },
-                content: {
-                  text: child === "Edit" ? "编辑" : "删除",
-                },
-                event: {
-                  click: (currentRowData: any) => {
-                    if (child === "Edit") {
-                      editStudentForm.value = JSON.parse(JSON.stringify(currentRowData.row));
-                      isEditStudentForm.value = true;
-                    } else {
-                      ElMessageBox.confirm("确定删除学生信息吗？", "提示", {
-                        type: "error",
-                        confirmButtonText: "确定",
-                        cancelButtonText: "取消",
-                        callback: async (action: string) => {
-                          if (action === "confirm") {
-                            await deleteStudent({ usermark: currentRowData.row.usermark });
-                            getStudentData();
-                          }
-                        },
-                      });
-                    }
-                  },
-                },
-              };
-            }),
-          };
-        }
-      }),
+        })
+        .filter((item: any) => {
+          if (item.attr.label !== "操作") {
+            return true;
+          } else {
+            return (
+              userStore.getOperationAuthority.includes("EditStudentInfo") ||
+              userStore.getOperationAuthority.includes("DeleteStudentInfo")
+            );
+          }
+        }),
     };
   });
   const title = {
@@ -446,7 +467,7 @@
         });
       }
     });
-    if (!Object.keys(obj).includes("counselor")) {
+    if (!Object.keys(obj).includes("counselor") && userStore.getOperationAuthority.includes("AddStudentInfo")) {
       itemArr[0].push({
         span: 12,
         attr: {
