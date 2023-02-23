@@ -25,3 +25,22 @@ export const convertBase64 = (file: any) => {
     };
   });
 };
+
+export const deployRoute = (authorityArr, routeArr) => {
+  let resultRoute = [];
+  authorityArr.forEach((authority) => {
+    let route = routeArr.find((route) => {
+      return route.name === authority.authority_name;
+    });
+    if (authority.hasOwnProperty("children")) {
+      route["children"] = deployRoute(
+        authority["children"],
+        route["children"]
+      );
+      resultRoute.push(route);
+    } else {
+      resultRoute.push(route);
+    }
+  });
+  return resultRoute;
+};

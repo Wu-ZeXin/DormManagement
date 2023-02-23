@@ -14,7 +14,7 @@ import { removeToken, getToken } from "@/utils/token";
 import { isString } from "@/utils/is";
 import { useUserStoreWithOut } from "$stores/user";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { s } from "$locales";
+
 
 const { VITE_GLOB_API_URL } = getAppEnvConfig();
 
@@ -37,7 +37,7 @@ const transform: AxiosTransform = {
     const result = res.data;
     if (!result) {
       // return '[HTTP] Request has no return value';
-      throw new Error(s("请求出错，请稍后重试"));
+      throw new Error("请求出错，请稍后重试");
     }
     //  这里 code，result，message为 后台统一的字段，需要在 types.ts内修改为项目自己的接口返回格式
     const { code, data, msg } = result;
@@ -59,7 +59,7 @@ const transform: AxiosTransform = {
     let timeoutMsg = "";
     switch (code) {
       case ResultEnum.TIMEOUT:
-        timeoutMsg = s("登录超时，请重新登录！");
+        timeoutMsg = "登录超时，请重新登录！";
         const userStore = useUserStoreWithOut();
         removeToken();
         userStore.Logout(true);
@@ -74,9 +74,9 @@ const transform: AxiosTransform = {
     if (timeoutMsg === "登录过期，请重新登录!") {
       ElMessageBox({
         type: "error",
-        title: s("错误提示"),
+        title: "错误提示",
         message: timeoutMsg,
-        confirmButtonText: s("确认"),
+        confirmButtonText: "确认",
         callback: function (action: string) {
           if (action === "confirm") {
             removeToken();
@@ -94,9 +94,9 @@ const transform: AxiosTransform = {
       if (timeoutMsg === "登录过期，请重新登录!") {
         ElMessageBox({
           type: "error",
-          title: s("错误提示"),
+          title: "错误提示",
           message: timeoutMsg,
-          confirmButtonText: s("确认"),
+          confirmButtonText: "确认",
           callback: function (action: string) {
             if (action === "confirm") {
               removeToken();
@@ -108,18 +108,18 @@ const transform: AxiosTransform = {
       } else {
         ElMessageBox({
           type: "error",
-          title: s("错误提示"),
+          title: "错误提示",
           message: timeoutMsg,
-          confirmButtonText: s("确认"),
+          confirmButtonText: "确认",
         });
       }
     } else if (options.errorMessageMode === "message") {
       if (timeoutMsg === "登录过期，请重新登录!") {
         ElMessageBox({
           type: "error",
-          title: s("错误提示"),
+          title: "错误提示",
           message: timeoutMsg,
-          confirmButtonText: s("确认"),
+          confirmButtonText: "确认",
           callback: function (action: string) {
             if (action === "confirm") {
               removeToken();
@@ -133,7 +133,7 @@ const transform: AxiosTransform = {
       }
     }
 
-    throw new Error(timeoutMsg || s("请求出错，请稍后重试"));
+    throw new Error(timeoutMsg || "请求出错，请稍后重试");
   },
 
   // 请求之前处理config
@@ -214,19 +214,19 @@ const transform: AxiosTransform = {
 
     try {
       if (code === "ECONNABORTED" && message.indexOf("timeout") !== -1) {
-        errMessage = s("接口请求超时，请刷新页面重试！");
+        errMessage = "接口请求超时，请刷新页面重试！";
       }
       if (err?.includes("Network Error")) {
-        errMessage = s("网络异常，请检查您的网络连接是否正常！");
+        errMessage = "网络异常，请检查您的网络连接是否正常！";
       }
 
       if (errMessage) {
         if (errorMessageMode === "modal") {
           ElMessageBox({
             type: "error",
-            title: s("错误提示"),
+            title: "错误提示",
             message: errMessage,
-            confirmButtonText: s("确认"),
+            confirmButtonText: "确认",
           });
         } else if (errorMessageMode === "message") {
           ElMessage.error(errMessage);

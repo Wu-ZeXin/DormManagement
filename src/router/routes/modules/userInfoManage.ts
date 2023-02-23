@@ -1,6 +1,6 @@
 import type { AppRouteRecordRaw } from "@/router/types";
 
-const home: AppRouteRecordRaw = {
+const userInfo: AppRouteRecordRaw = {
   path: "/",
   name: "UserInfoManage",
   component: () => import("@/layout/home/Home.vue"),
@@ -27,4 +27,4 @@ const home: AppRouteRecordRaw = {
   ]
 };
 
-export default home;
+export default userInfo;

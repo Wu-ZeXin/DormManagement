@@ -1,12 +1,12 @@
 import type { AppRouteRecordRaw } from "@/router/types";
 
-const home: AppRouteRecordRaw = {
+const common: AppRouteRecordRaw = {
   path: "/",
-  name: "Home",
+  name: "Common",
   redirect: "/welcome",
   component: () => import("@/layout/home/Home.vue"),
   meta: {
-    title: "主页",
+    title: "常规路由",
   },
   children: [
     {
@@ -14,7 +14,7 @@ const home: AppRouteRecordRaw = {
       name: "Welcome",
       component: () => import("@/views/system/welcome/Welcome.vue"),
       meta: {
-        title: "主页",
+        title: "欢迎",
       },
     },
     {
@@ -22,10 +22,10 @@ const home: AppRouteRecordRaw = {
       name: "PersonalCenter",
       component: () => import("@/views/system/personalCenter/PersonalCenter.vue"),
       meta: {
-        title: "主页",
+        title: "个人中心",
       },
     }
   ]
 };
 
-export default home;
+export default common;

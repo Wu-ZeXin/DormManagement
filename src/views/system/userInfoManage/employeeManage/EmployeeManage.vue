@@ -1,5 +1,5 @@
 <template>
-  <el-card style="margin-bottom: 20px">
+  <el-card class="card-spacing">
     <el-select
       v-model="usermark"
       placeholder="请选择职工"
@@ -8,7 +8,11 @@
       @visible-change="getEmployeeOptions"
       @change="getEmployeeData"
     >
-      <el-input v-model="selectKey" style="width: 80%; margin: 0 10%;" @change="getEmployeeOptions"></el-input>
+      <el-input
+        v-model="selectKey"
+        style="width: 80%; margin: 0 10%"
+        @change="getEmployeeOptions"
+      ></el-input>
       <el-option
         v-for="item in selectOption"
         :key="item.usermark"
@@ -28,7 +32,7 @@
       clearable
       @visible-change="getRoleOptions"
       @change="getEmployeeData"
-      style="margin-left: 20px;"
+      style="margin-left: 20px"
     >
       <el-option
         v-for="item in roleSelectOptions"
@@ -38,7 +42,11 @@
       >
       </el-option>
     </el-select>
-    <el-button :color="themeColor" style="margin-left: 20px" @click="isAddEmployeeForm = true"
+    <el-button
+      v-if="userStore.getOperationAuthority.includes('AddEmployeeInfo')"
+      :color="themeColor"
+      style="margin-left: 20px"
+      @click="isAddEmployeeForm = true"
       >添加职工</el-button
     >
   </el-card>
@@ -70,6 +78,7 @@
   import { type Ref, ref, computed, onBeforeMount, watch } from "vue";
   import { getOption } from "@/api/common";
   import { getEmployeeDataList, deleteEmployee, updateEmployee, addEmployee } from "@/api/userInfo";
+  import { useUserStoreWithOut } from "@/stores/modules/user";
   import { BasicTable } from "@/components/Table";
   import { BasicForm } from "@/components/Form";
   import { ElMessageBox } from "element-plus";
@@ -121,6 +130,7 @@
   // 当前页
   let page = ref(1);
   const loading = ref(true);
+  const userStore = useUserStoreWithOut();
 
   const usermark = ref("");
   const role = ref("");
@@ -128,15 +138,15 @@
   const selectKey = ref("");
   const getEmployeeOptions = async (val: boolean) => {
     if (val || selectKey.value !== "") {
-      let result = await getOption({ key: "employee", selectKey: selectKey.value, });
+      let result = await getOption({ key: "employee", selectKey: selectKey.value });
       selectOption.value = result.selectOptions;
-      if(usermark.value !== "") {
+      if (usermark.value !== "") {
         selectKey.value = "";
       }
     }
   };
   const getRoleOptions = async (val: boolean) => {
-    if (val) {
+    if (val && roleSelectOptions.value.length === 0) {
       let result = await getOption({ key: "role" });
       roleSelectOptions.value = result.selectOptions;
     }
@@ -216,80 +226,93 @@
         size: "default",
         highlightCurrentRow: true,
       },
-      columnArr: employeeDataArr.map((item: any) => {
-        if (item.title !== "操作") {
-          if (item.prop !== "sex") {
-            return {
-              attr: {
-                prop: item.prop,
-                label: item.title,
-                headerAlign: "center",
-                align: "center",
-                width: item.prop === "email" ? "250px" : "",
-              },
-            };
+      columnArr: employeeDataArr
+        .map((item: any) => {
+          if (item.title !== "操作") {
+            if (item.prop !== "sex") {
+              return {
+                attr: {
+                  prop: item.prop,
+                  label: item.title,
+                  headerAlign: "center",
+                  align: "center",
+                  width: item.prop === "email" ? "250px" : "",
+                },
+              };
+            } else {
+              return {
+                attr: {
+                  prop: item.prop,
+                  label: item.title,
+                  headerAlign: "center",
+                  align: "center",
+                  width: "80px",
+                },
+                defaultSlotName: "SexTag",
+              };
+            }
           } else {
             return {
               attr: {
-                prop: item.prop,
                 label: item.title,
                 headerAlign: "center",
                 align: "center",
-                width: "80px",
+                width: "160px",
               },
-              defaultSlotName: "SexTag",
+              defaultSlotConfig: ["Edit", "Delete"]
+                .map((child: string) => {
+                  return {
+                    comp: "el-button",
+                    attr: {
+                      icon: child === "Edit" ? Edit : Delete,
+                      type: child === "Edit" ? "warning" : "danger",
+                      link: true,
+                    },
+                    content: {
+                      text: child === "Edit" ? "编辑" : "删除",
+                    },
+                    event: {
+                      click: (currentRowData: any) => {
+                        if (child === "Edit") {
+                          editEmployeeForm.value = JSON.parse(JSON.stringify(currentRowData.row));
+                          isEditEmployeeForm.value = true;
+                        } else {
+                          ElMessageBox.confirm("确定删除职工信息吗？", "提示", {
+                            type: "error",
+                            confirmButtonText: "确定",
+                            cancelButtonText: "取消",
+                            callback: async (action: string) => {
+                              if (action === "confirm") {
+                                await deleteEmployee({ usermark: currentRowData.row.usermark });
+                                getEmployeeData();
+                              }
+                            },
+                          });
+                        }
+                      },
+                    },
+                  };
+                })
+                .filter((item: any) => {
+                  if (item.content.text === "编辑") {
+                    return userStore.getOperationAuthority.includes("EditEmployeeInfo");
+                  } else {
+                    return userStore.getOperationAuthority.includes("DeleteEmployeeInfo");
+                  }
+                }),
             };
           }
-        } else {
-          return {
-            attr: {
-              label: item.title,
-              headerAlign: "center",
-              align: "center",
-              width: "160px",
-            },
-            defaultSlotConfig: ["Edit", "Delete"].map((child: string) => {
-              return {
-                comp: "el-button",
-                attr: {
-                  icon: child === "Edit" ? Edit : Delete,
-                  type: child === "Edit" ? "warning" : "danger",
-                  link: true,
-                },
-                content: {
-                  text: child === "Edit" ? "编辑" : "删除",
-                },
-                event: {
-                  click: (currentRowData: any) => {
-                    if (child === "Edit") {
-                      editEmployeeForm.value = JSON.parse(JSON.stringify(currentRowData.row));
-                      isEditEmployeeForm.value = true;
-                    } else {
-                      ElMessageBox.confirm("确定删除职工信息吗？", "提示", {
-                        type: "error",
-                        confirmButtonText: "确定",
-                        cancelButtonText: "取消",
-                        callback: async (action: string) => {
-                          if (action === "confirm") {
-                            await deleteEmployee({ usermark: currentRowData.row.usermark });
-                            getEmployeeData();
-                          }
-                        },
-                      });
-                    }
-                  },
-                },
-              };
-            }),
-          };
-        }
-      }).filter((item: any) => {
-        if(item.attr.label !== "操作") {
-          return true;
-        } else {
-          return true;
-        }
-      }),
+        })
+        .filter((item: any) => {
+          if (item.attr.label !== "操作") {
+            return true;
+          } else {
+            return (
+              userStore.getOperationAuthority.includes("EditEmployeeInfo") ||
+              userStore.getOperationAuthority.includes("DeleteEmployeeInfo")
+            );
+          }
+        }),
     };
   });
 

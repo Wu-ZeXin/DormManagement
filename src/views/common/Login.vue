@@ -27,7 +27,6 @@
   import { useUserStoreWithOut } from "$stores/user";
   import { ElMessage } from "element-plus";
   import { type UnwrapRef, reactive, computed, ref, toRaw } from "vue";
-  import { s } from "$locales";
   import { themeColor } from "$styleVariable";
 
   interface LoginForm {
@@ -80,8 +79,8 @@
       ref: loginRef,
       attr: {
         rules: {
-          userMark: [{ required: true, message: s("请输入学号或职工号"), trigger: "blur" }],
-          password: [{ required: true, message: s("请输入密码"), trigger: "blur" }],
+          userMark: [{ required: true, message: "请输入学号或职工号", trigger: "blur" }],
+          password: [{ required: true, message: "请输入密码", trigger: "blur" }],
         },
       },
       itemArr: [
@@ -94,7 +93,7 @@
               comp: "el-input",
               attr: {
                 type: "text",
-                placeholder: s("请输入学号或职工号"),
+                placeholder: "请输入学号或职工号",
               },
               event: {
                 keyup: ($event: any) => {
@@ -118,7 +117,7 @@
               comp: "el-input",
               attr: {
                 type: "password",
-                placeholder: s("请输入密码"),
+                placeholder: "请输入密码",
                 "show-password": true,
               },
               event: {
@@ -153,7 +152,7 @@
                 submit: login,
               },
               content: {
-                text: s("登录"),
+                text: "登录",
               },
             },
           },
@@ -173,7 +172,7 @@
                 },
               },
               content: {
-                text: s("忘记密码？"),
+                text: "忘记密码？",
               },
             },
           },

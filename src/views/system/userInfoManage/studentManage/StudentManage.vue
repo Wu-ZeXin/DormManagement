@@ -1,5 +1,5 @@
 <template>
-  <el-card style="margin-bottom: 20px">
+  <el-card class="card-spacing">
     <BasicForm :form-option="createSearchForm"></BasicForm>
   </el-card>
   <el-card>
@@ -630,6 +630,7 @@
                     click: () => {
                       if (key === "取消") {
                         isAddStudentForm.value = false;
+                        addStudentFormRef.value.resetFields();
                       } else {
                         addStudentFormRef.value.validate(async (valid: boolean) => {
                           if (!valid) return;

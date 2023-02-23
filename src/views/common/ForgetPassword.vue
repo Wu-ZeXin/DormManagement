@@ -10,7 +10,6 @@
   import LoginBackground from "@/layout/LoginBackground/index.vue";
   import GetAuthCode from "@/views/common/src/GetAuthCode.vue";
   import { BasicForm } from "@/components/Form";
-  import { s } from "$locales";
   import { themeColor } from "$styleVariable";
   import { checkTelephone } from "@/utils/validator";
   import { type UnwrapRef, reactive, computed } from "vue";
@@ -34,13 +33,13 @@
       mode: forgetPasswordForm,
       attr: {
         rules: {
-          password: [{ required: true, message: s("密码不能为空！"), trigger: "blur" }],
-          confirmPassword: [{ required: true, message: s("再次输入密码！"), trigger: "blur" }],
+          password: [{ required: true, message: "密码不能为空！", trigger: "blur" }],
+          confirmPassword: [{ required: true, message: "再次输入密码！", trigger: "blur" }],
           telephone: [
-            { required: true, message: s("手机号码不能为空！"), trigger: "blur" },
-            { validator: checkTelephone, message: s("手机格式错误！"), trigger: "blur" },
+            { required: true, message: "手机号码不能为空！", trigger: "blur" },
+            { validator: checkTelephone, message: "手机格式错误！", trigger: "blur" },
           ],
-          authCode: [{ required: true, message: s("验证码不能为空"), trigger: "blur" }],
+          authCode: [{ required: true, message: "验证码不能为空", trigger: "blur" }],
         },
       },
       itemArr: [
@@ -53,7 +52,7 @@
               comp: "el-input",
               attr: {
                 type: "password",
-                placeholder: s("请输入密码"),
+                placeholder: "请输入密码",
                 "show-password": true,
               },
             },
@@ -68,7 +67,7 @@
               comp: "el-input",
               attr: {
                 type: "password",
-                placeholder: s("请再次输入密码"),
+                placeholder: "请再次输入密码",
                 "show-password": true,
               },
             },
@@ -83,7 +82,7 @@
               comp: "el-input",
               attr: {
                 type: "text",
-                placeholder: s("请输入手机号码"),
+                placeholder: "请输入手机号码",
               },
             },
           },
@@ -108,12 +107,12 @@
                         padding: "8px 4px",
                       },
                     },
-                    html: `<span>${s("获取验证码")}</span>`,
+                    html: `<span>${"获取验证码"}</span>`,
                   },
                   input: {
                     span: 16,
                     attr: {
-                      placeholder: s("请输入验证码"),
+                      placeholder: "请输入验证码",
                     },
                   },
                 },
@@ -136,7 +135,7 @@
                 },
               },
               content: {
-                text: s("确认"),
+                text: "确认",
               },
             },
           },

@@ -3,7 +3,10 @@ import { defineStore } from "pinia";
 import md5 from "js-md5";
 
 import { login, modifyPassword } from "@/api/user";
-import { router } from "@/router";
+import { getUserAuthority } from "@/api/authority";
+import { asyncRoutes } from "@/router/routes";
+import { deployRoute } from "@/utils";
+import { router, resetRouter } from "@/router";
 import { store } from "@/stores";
 
 interface LoginParams {
@@ -23,11 +26,19 @@ export const useUserStore = defineStore({
   state: () => ({
     portrait: "",
     token: getToken(),
+    route_authority: [],
+    operation_authority: [],
   }),
 
   getters: {
     getPortrait(): string {
       return this.portrait;
+    },
+    getRouteAuthority(): Array<T> {
+      return this.route_authority;
+    },
+    getOperationAuthority(): Array<T> {
+      return this.operation_authority;
     },
   },
 
@@ -46,7 +57,17 @@ export const useUserStore = defineStore({
       setToken(res.token);
       sessionStorage.setItem("portrait", res.userInfo.portrait);
       this.token = res.token;
+      await this.GetUserAuthority();
       return res;
+    },
+    async GetUserAuthority() {
+      let result = await getUserAuthority();
+      this.route_authority = result.route_authority;
+      this.operation_authority = result.operation_authority;
+      deployRoute(this.route_authority, asyncRoutes).forEach((item: any) => {
+        router.addRoute(item);
+        router.options.routes.push(item);
+      });
     },
     // 获取用户头像
     async reqPortrait() {
@@ -54,7 +75,6 @@ export const useUserStore = defineStore({
     },
     //  修改密码
     async reqModifyPassword(params: ModifyPasswordParams) {
-      console.log(params);
       params.password = md5(params.password as string);
       params.confirmPassword = md5(params.confirmPassword as string);
       await modifyPassword(params);
@@ -70,6 +90,7 @@ export const useUserStore = defineStore({
       } */
       sessionStorage.clear();
       removeToken();
+      resetRouter();
       goLogin &&
         router.push({
           name: "Login",

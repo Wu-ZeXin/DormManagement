@@ -24,41 +24,26 @@
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onBeforeMount } from "vue";
+  import { type Ref, ref, computed, onBeforeMount } from "vue";
   import { BasicMenu } from "@/components/Menu";
   import { Icon } from "@/components/Icon";
   import { themeColor } from "$styleVariable";
   import { useRoute } from "vue-router";
+  import { useUserStoreWithOut } from "@/stores/modules/user";
+
+  onBeforeMount(() => {
+    menuOption.value = userStore.getRouteAuthority.filter((item: any) => {
+      return item.authority_name !== "Common";
+    });
+  })
 
   const route = useRoute();
   const isCollapse = ref(false);
-  const menuOption = ref([
-    {
-      authority_id: 100,
-      authority_pid: 0,
-      authority_title: "用户信息管理",
-      authority_name: "userInfoManage",
-      authority_path: "/userInfo-manage",
-      children: [
-        {
-          authority_id: 101,
-          authority_pid: 0,
-          authority_title: "职工信息管理",
-          authority_name: "EmployeeManage",
-          authority_path: "/employee-manage",
-        },
-        {
-          authority_id: 102,
-          authority_pid: 0,
-          authority_title: "学生信息管理",
-          authority_name: "StudentManage",
-          authority_path: "/student-manage",
-        },
-      ],
-    },
-  ]);
+  const userStore = useUserStoreWithOut();
+  const menuOption: Ref<Array<T>> = ref([]);
   const icons = {
-    userInfoManage: "User",
+    UserInfoManage: "User",
+    AuthorityManage: "Setting"
   };
   const renderItemArr = (item: any) => {
     if (item.hasOwnProperty("children")) {
@@ -97,6 +82,7 @@
         activeTextColor: "#FFF",
         defaultActive: route.name,
         router: true,
+        collapse: isCollapse.value,
       },
       itemArr: menuOption.value.map((item: any) => {
         return renderItemArr(item);

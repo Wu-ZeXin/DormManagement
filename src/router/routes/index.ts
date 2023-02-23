@@ -19,5 +19,4 @@ export const basicRoutes = [
   RootRoute,
   LoginRoute,
   ForgetPasswordRoute,
-  ...asyncRoutes,
 ]
