@@ -18,7 +18,6 @@
     :props="{
       label: 'authority_title',
     }"
-    default-expand-all
     @check="changeRoleAuthority"
   >
     <template #default="{ data }">

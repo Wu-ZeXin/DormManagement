@@ -23,17 +23,17 @@ git clone https://github.com/Wu-ZeXin/DormManagement.git
 ```
 cd dorm_management
 
-npm install
+yarn install
 ```
 
 - 运行
 
 ```
-npm run dev
+yarn run dev
 ```
 
 - 构建
 
 ```
-npm run build
+yarn run build
 ```
