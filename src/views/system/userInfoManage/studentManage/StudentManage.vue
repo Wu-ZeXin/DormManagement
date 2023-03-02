@@ -32,7 +32,7 @@
   import { getOption } from "@/api/common";
   import { BasicTable } from "@/components/Table";
   import { BasicForm } from "@/components/Form";
-  import { ElMessageBox } from "element-plus";
+  import { ElMessageBox, ElMessage } from "element-plus";
   import { Delete, Edit, Plus } from "@element-plus/icons-vue";
   import { checkTelephone, checkEmail } from "@/utils/validator";
   import { themeColor } from "$styleVariable";
@@ -172,6 +172,7 @@
   const selectOptions = ref({
     college: [],
     dorm_build: [],
+    dorm: [],
   });
 
   watch(
@@ -358,7 +359,7 @@
   };
   // 表单项配置对象
   const renderItemArr = (obj: any) => {
-    let select = ["college", "dorm_build"];
+    let select = ["college", "dorm_build", "dorm"];
     let itemArr: Array<T> = [[]];
     Object.keys(obj).forEach((key: string) => {
       if (key === "usermark" || key === "name" || key === "sex") {
@@ -426,7 +427,20 @@
             event: {
               visibleChange: async (val: boolean) => {
                 if (val) {
-                  let result = await getOption({ key });
+                  let selectKey = "";
+                  if (key === "dorm") {
+                    selectOptions.value.dorm = [];
+                    if(Object.keys(obj).includes("usermark")) {
+                      selectKey = editStudentForm.value?.dorm_build;
+                    } else {
+                      selectKey = addStudentForm.value.dorm_build;
+                    }
+                    if(selectKey === "") {
+                      ElMessage.error("请先选择宿舍楼");
+                      return;
+                    }
+                  }
+                  let result = await getOption({ key, selectKey });
                   selectOptions.value[key] = result.selectOptions;
                 }
               },
@@ -438,8 +452,8 @@
               return {
                 comp: "el-option",
                 attr: {
-                  label: key === "college" ? option.college_name : option.dorm_build_name,
-                  value: key === "college" ? option.college_name : option.dorm_build_name,
+                  label: key === "college" ? option.college_name : (key === "dorm" ? option.dorm_number : option.dorm_build_name),
+                  value: key === "college" ? option.college_name : (key === "dorm" ? option.dorm_number : option.dorm_build_name),
                 },
               };
             }),
@@ -467,7 +481,10 @@
         });
       }
     });
-    if (!Object.keys(obj).includes("counselor") && userStore.getOperationAuthority.includes("AddStudentInfo")) {
+    if (
+      !Object.keys(obj).includes("counselor") &&
+      userStore.getOperationAuthority.includes("AddStudentInfo")
+    ) {
       itemArr[0].push({
         span: 12,
         attr: {
@@ -534,16 +551,6 @@
           class: [{ required: true, message: "请选择学生所在班级", trigger: "blur" }],
           dorm: [{ required: true, message: "请选择学生所在宿舍房间", trigger: "blur" }],
           dorm_build: [{ required: true, message: "请选择学生所在宿舍楼", trigger: "blur" }],
-          father: [{ required: true, message: "请输入学生父亲姓名", trigger: "blur" }],
-          father_telephone: [
-            { required: true, message: "请输入学生父亲电话", trigger: "blur" },
-            { validator: checkTelephone, message: "手机格式错误！", trigger: "blur" },
-          ],
-          mother: [{ required: true, message: "请输入学生母亲姓名", trigger: "blur" }],
-          mother_telephone: [
-            { required: true, message: "请输入学生母亲电话", trigger: "blur" },
-            { validator: checkTelephone, message: "手机格式错误！", trigger: "blur" },
-          ],
           counselor: [{ required: true, message: "请输入学生辅导员姓名", trigger: "blur" }],
           counselor_telephone: [
             { required: true, message: "请输入学生辅导员电话", trigger: "blur" },

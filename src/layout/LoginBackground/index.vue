@@ -26,6 +26,8 @@
 
 <style scoped lang="less">
   .login {
+    display: flex;
+    justify-content: center;
     width: 100%;
     min-height: 100vh;
     background: url(@/assets/images/HZU.jpg) center center;
@@ -38,8 +40,7 @@
       position: absolute;
       text-align: center;
       color: #007d8c;
-      top: 15%;
-      left: 42%;
+      margin-top: 5%;
       font-size: 50px;
       font-weight: 700;
     }

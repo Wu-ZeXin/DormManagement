@@ -146,6 +146,7 @@
     }
   };
   const getRoleOptions = async (val: boolean) => {
+    if(roleSelectOptions.value.length! === 0) return;
     if (val && roleSelectOptions.value.length === 0) {
       let result = await getOption({ key: "role" });
       roleSelectOptions.value = result.selectOptions;
@@ -385,6 +386,7 @@
               event: {
                 visibleChange: async (val: boolean) => {
                   if (val) {
+                    if(roleSelectOptions.value.length !== 0 ) return;
                     let result = await getOption({ key: "role" });
                     roleSelectOptions.value = result.selectOptions;
                   }

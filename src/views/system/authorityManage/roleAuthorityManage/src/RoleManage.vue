@@ -25,8 +25,10 @@
   import { useUserStoreWithOut } from "@/stores/modules/user";
 
   const getRoleList = async () => {
+    loading.value = true;
     let result = await getRole();
     roleList.value = result.roleList;
+    loading.value = false;
   };
 
   onBeforeMount(() => {
@@ -34,7 +36,7 @@
   });
 
   const roleList = ref([]);
-  const loading = ref(false);
+  const loading = ref(true);
   const userStore = useUserStoreWithOut();
   const editRoleForm = ref({});
   const editRoleFormRef = ref();

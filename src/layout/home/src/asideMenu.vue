@@ -43,7 +43,8 @@
   const menuOption: Ref<Array<T>> = ref([]);
   const icons = {
     UserInfoManage: "User",
-    AuthorityManage: "Setting"
+    AuthorityManage: "Setting",
+    DormManage: "OfficeBuilding"
   };
   const renderItemArr = (item: any) => {
     if (item.hasOwnProperty("children")) {
