@@ -238,7 +238,11 @@
         }),
     };
   });
-  const editRepairBillsForm = ref({});
+  const editRepairBillsForm = ref({
+    repair_dorm_build: "",
+    secondary_repair_type: "",
+    first_repair_type: ""
+  });
   const isEditRepairBillForm = ref(false);
   const editRepairBillsFormRef = ref();
   const editRepairBillsFormData = {
