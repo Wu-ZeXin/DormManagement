@@ -259,6 +259,7 @@
                         } else {
                           ElMessageBox.confirm("确定删除学生信息吗？", "提示", {
                             type: "error",
+                            buttonSize: "default",
                             confirmButtonText: "确定",
                             cancelButtonText: "取消",
                             callback: async (action: string) => {
@@ -427,33 +428,48 @@
             event: {
               visibleChange: async (val: boolean) => {
                 if (val) {
+                  let searchKey = key;
                   let selectKey = "";
                   if (key === "dorm") {
                     selectOptions.value.dorm = [];
-                    if(Object.keys(obj).includes("usermark")) {
-                      selectKey = editStudentForm.value?.dorm_build;
+                    if (Object.keys(obj).includes("usermark")) {
+                      if (!Object.keys(obj).includes("telephone")) {
+                        selectKey = searchForm.value?.dorm_build;
+                        searchKey = "repair_dorm";
+                      } else {
+                        selectKey = editStudentForm.value?.dorm_build;
+                        searchKey = "dorm";
+                      }
                     } else {
                       selectKey = addStudentForm.value.dorm_build;
+                      searchKey = "dorm";
                     }
-                    if(selectKey === "") {
-                      ElMessage.error("请先选择宿舍楼");
+                    if (selectKey === "") {
+                      ElMessage.warning("请先选择宿舍楼");
                       return;
                     }
                   }
-                  let result = await getOption({ key, selectKey });
+                  let result = await getOption({ key: searchKey, selectKey });
                   selectOptions.value[key] = result.selectOptions;
                 }
-              },
-              change: () => {
-                !Object.keys(obj).includes("counselor") && getStudentData();
               },
             },
             children: selectOptions.value[key].map((option: any) => {
               return {
                 comp: "el-option",
                 attr: {
-                  label: key === "college" ? option.college_name : (key === "dorm" ? option.dorm_number : option.dorm_build_name),
-                  value: key === "college" ? option.college_name : (key === "dorm" ? option.dorm_number : option.dorm_build_name),
+                  label:
+                    key === "college"
+                      ? option.college_name
+                      : key === "dorm"
+                      ? option.dorm_number
+                      : option.dorm_build_name,
+                  value:
+                    key === "college"
+                      ? option.college_name
+                      : key === "dorm"
+                      ? option.dorm_number
+                      : option.dorm_build_name,
                 },
               };
             }),
@@ -496,10 +512,25 @@
             {
               comp: "el-button",
               attr: {
+                color: themeColor,
+                icon: "Search",
+              },
+              content: {
+                text: "搜索",
+              },
+              event: {
+                click: function () {
+                  getStudentData();
+                },
+              },
+            },
+            {
+              comp: "el-button",
+              attr: {
                 icon: Plus,
                 color: themeColor,
                 style: {
-                  marginLeft: "30px",
+                  marginLeft: "50px",
                 },
               },
               event: {

@@ -120,6 +120,7 @@
                         } else {
                           ElMessageBox.confirm("确定删除权限吗？", "提示", {
                             type: "error",
+                            buttonSize: "default",
                             confirmButtonText: "确定",
                             cancelButtonText: "取消",
                             callback: async (action: string) => {

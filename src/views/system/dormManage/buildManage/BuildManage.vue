@@ -212,6 +212,7 @@
                       } else {
                         ElMessageBox.confirm("确定删除职工信息吗？", "提示", {
                           type: "error",
+                          buttonSize: "default",
                           confirmButtonText: "确定",
                           cancelButtonText: "取消",
                           callback: async (action: string) => {

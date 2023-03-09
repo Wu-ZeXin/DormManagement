@@ -146,7 +146,7 @@
     }
   };
   const getRoleOptions = async (val: boolean) => {
-    if(roleSelectOptions.value.length! === 0) return;
+    if(roleSelectOptions.value.length !== 0) return;
     if (val && roleSelectOptions.value.length === 0) {
       let result = await getOption({ key: "role" });
       roleSelectOptions.value = result.selectOptions;
@@ -280,6 +280,7 @@
                         } else {
                           ElMessageBox.confirm("确定删除职工信息吗？", "提示", {
                             type: "error",
+                            buttonSize: "default",
                             confirmButtonText: "确定",
                             cancelButtonText: "取消",
                             callback: async (action: string) => {

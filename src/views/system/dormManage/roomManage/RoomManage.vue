@@ -388,6 +388,7 @@
                         } else {
                           ElMessageBox.confirm("确定将该学生从宿舍中删除吗？", "提示", {
                             type: "error",
+                            buttonSize: "default",
                             confirmButtonText: "确定",
                             cancelButtonText: "取消",
                             callback: async (action: string) => {

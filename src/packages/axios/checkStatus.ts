@@ -61,6 +61,7 @@ export function checkStatus(
     if (errorMessageMode === "modal") {
       ElMessageBox({
         type: "error",
+        buttonSize: "default",
         title: "错误提示",
         message: errMessage,
         confirmButtonText: "确认",

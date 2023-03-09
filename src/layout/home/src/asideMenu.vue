@@ -35,7 +35,7 @@
     menuOption.value = userStore.getRouteAuthority.filter((item: any) => {
       return item.authority_name !== "Common";
     });
-  })
+  });
 
   const route = useRoute();
   const isCollapse = ref(false);
@@ -44,7 +44,8 @@
   const icons = {
     UserInfoManage: "User",
     AuthorityManage: "Setting",
-    DormManage: "OfficeBuilding"
+    DormManage: "OfficeBuilding",
+    LogisticsService: "Tools",
   };
   const renderItemArr = (item: any) => {
     if (item.hasOwnProperty("children")) {

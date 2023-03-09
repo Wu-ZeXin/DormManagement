@@ -161,6 +161,7 @@
                       confirmButtonText: "确定",
                       cancelButtonText: "取消",
                       type: "warning",
+                      buttonSize: "default",
                       callback: async (action: string) => {
                         if (action === "confirm") {
                           await userStore.reqModifyPassword(changePasswordForm.value);

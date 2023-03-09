@@ -74,6 +74,7 @@ const transform: AxiosTransform = {
     if (timeoutMsg === "登录过期，请重新登录!") {
       ElMessageBox({
         type: "error",
+        buttonSize: "default",
         title: "错误提示",
         message: timeoutMsg,
         confirmButtonText: "确认",
@@ -94,6 +95,7 @@ const transform: AxiosTransform = {
       if (timeoutMsg === "登录过期，请重新登录!") {
         ElMessageBox({
           type: "error",
+          buttonSize: "default",
           title: "错误提示",
           message: timeoutMsg,
           confirmButtonText: "确认",
@@ -108,6 +110,7 @@ const transform: AxiosTransform = {
       } else {
         ElMessageBox({
           type: "error",
+          buttonSize: "default",
           title: "错误提示",
           message: timeoutMsg,
           confirmButtonText: "确认",
@@ -117,6 +120,7 @@ const transform: AxiosTransform = {
       if (timeoutMsg === "登录过期，请重新登录!") {
         ElMessageBox({
           type: "error",
+          buttonSize: "default",
           title: "错误提示",
           message: timeoutMsg,
           confirmButtonText: "确认",
@@ -224,6 +228,7 @@ const transform: AxiosTransform = {
         if (errorMessageMode === "modal") {
           ElMessageBox({
             type: "error",
+            buttonSize: "default",
             title: "错误提示",
             message: errMessage,
             confirmButtonText: "确认",
