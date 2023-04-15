@@ -42,6 +42,7 @@
   const userStore = useUserStoreWithOut();
   const menuOption: Ref<Array<T>> = ref([]);
   const icons = {
+    DormScore: "DataAnalysis",
     UserInfoManage: "User",
     AuthorityManage: "Setting",
     DormManage: "OfficeBuilding",
